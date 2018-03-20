@@ -1,0 +1,47 @@
+function sendDataToServer( dataset )
+{
+    # Make sure the HTTPrequest is set to false when starting.
+    # We don't want any interference with another non-finished HTTPrequest
+    var HTTPrequest = false;
+    
+    # Check if the Browser is a Firfox or Chrome product
+    if( window.XMLHttpRequest ){ 
+        HTTPrequest = new XMLHttpRequest(); 
+    } 
+    # Check if the Browser is a Micrsoft browser (Edge or Internet Explorer)
+    else if ( window.ActiveXObject ) { 
+        HTTPrequest = new ActiveXObject("MICROSOFT.XMLHTTP");
+    }
+    
+    # Start preparing the data transfer
+    if( HTTPrequest ) {
+        # Set the request method, with the target backend controller following
+        HTTPrequest.open( "POST" , "../controllers/Products.controller.php" );
+        
+        # Set the Request Header, making sure the POST is going to be sent.
+  		  HTTPrequest.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+        
+        # condition of the browser when Post is send.
+        HTTPrequest.onreadystatechange = function()
+        {
+            # The HTTPrequest expects a ready state of 4 and a HTTP status of 200 (ok)
+            # HTTP status 400 means not found, HTTP status 500 means Server Error, etc..
+            if( HTTPrequest.readyState == 4 &&  HTTPrequest.status == 200 )
+            {
+                # Retrieve server response when readyState and HTTP status are correct.
+                var serverResponse = HTTPrequest.responseText;
+                
+                /**
+                * process the serverResponse, call another function etc..
+                *
+                * YOU CANNOT RETURN ANYTHING FROM HERE, SINCE AJAX IS ASYNCHRONOUS.
+                **/
+            }
+        }
+       
+        # Send the incoming dataSet as an array to the server
+        HTTPrequest.send( "postData=" + dataset ); 
+    } 
+}
+//=============
+END OF FUNCTION
